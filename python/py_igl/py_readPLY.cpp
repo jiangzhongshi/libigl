@@ -17,3 +17,14 @@ m.def("readPLY", []
   return igl::readPLY(str,V,F,N,UV);
 }, __doc_igl_readPLY,
 py::arg("str"), py::arg("V"), py::arg("F"), py::arg("N"), py::arg("UV"));
+
+m.def("readPLY", []
+(
+  const std::string str,
+  Eigen::MatrixXd& V,
+  Eigen::MatrixXi& F
+)
+{
+  return igl::readPLY(str,V,F);
+}, __doc_igl_readPLY,
+py::arg("str"), py::arg("V"), py::arg("F"));

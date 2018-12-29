@@ -5,14 +5,15 @@
 // This Source Code Form is subject to the terms of the Mozilla Public License
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at http://mozilla.org/MPL/2.0/.
-m.def("grad", []
+
+
+m.def("is_vertex_manifold", []
 (
-  const Eigen::MatrixXd& V,
   const Eigen::MatrixXi& F,
-  Eigen::SparseMatrix<double>& G,
-  bool uniform
+  Eigen::MatrixXi& B
 )
 {
-  return igl::grad(V,F,G, uniform);
-}, __doc_igl_grad,
-py::arg("V"), py::arg("F"), py::arg("G"), py::arg("uniform"));
+  return igl::is_vertex_manifold(F, B);
+}, "is_vertex_manifold",
+py::arg("F"), py::arg("B"));
+

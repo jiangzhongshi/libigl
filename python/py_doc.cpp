@@ -464,6 +464,26 @@ const char *__doc_igl_deform_skeleton = R"igl_Qu8mg5v7(// Deform a skeleton.
   //   CT  #BE*2 by 3 list of deformed joint positions
   //   BET  #BE by 2 list of bone edge indices (maintains order)
   //)igl_Qu8mg5v7";
+const char *__doc_igl_dirac_operator = R"igl_Qu8mg5v7(// 
+  // Constructs the dirac operator with 4x4 matrix in place of quanternions
+  // for a given mesh (V,F).
+  // Templates:
+  //   DerivedV  derived type of eigen matrix for V (e.g. derived from
+  //     MatrixXd)
+  //   DerivedF  derived type of eigen matrix for F (e.g. derived from
+  //     MatrixXi)
+  //   Scalar  scalar type for eigen sparse matrix (e.g. double)
+  // Inputs:
+  //   V  #V by dim list of mesh vertex positions
+  //   F  #F by simplex_size list of mesh faces (must be triangles)
+  // Outputs:
+  //   D  4*#F by 4*#V dirac matrix
+  //   DA  4*#V by 4*#F adjoint to dirac matrix
+  //
+  //
+  // Note: This Dirac matrix uses a 4x4 matrix in place of quanternions
+  //
+  //)igl_Qu8mg5v7";
 const char *__doc_igl_directed_edge_orientations = R"igl_Qu8mg5v7(// Determine rotations that take each edge from the x-axis to its given rest
   // orientation.
   //
@@ -615,6 +635,13 @@ const char *__doc_igl_exact_geodesic = R"igl_Qu8mg5v7(
     // Note:  
     //      Specifying a face as target/source means its center.  
     //)igl_Qu8mg5v7";
+const char *__doc_igl_facet_components = R"igl_Qu8mg5v7(// Compute connected components of facets based on edge-edge adjacency.
+  //
+  // Inputs:
+  //   F  #F by 3 list of triangle indices
+  // Outputs:
+  //   C  #F list of connected component ids
+  //)igl_Qu8mg5v7";
 const char *__doc_igl_heat_geodesics_precompute = R"igl_Qu8mg5v7(
     // Precompute factorized solvers for computing a fast approximation of
     // geodesic distances on a mesh (V,F). [Crane et al. 2013]
@@ -1194,6 +1221,18 @@ const char *__doc_igl_remove_duplicate_vertices = R"igl_Qu8mg5v7(// REMOVE_DUPLI
   //   % remap faces
   //   SF = SVJ(F);
   //)igl_Qu8mg5v7";
+const char *__doc_igl_remove_unreferenced = R"igl_Qu8mg5v7(  // Remove unreferenced vertices from V, updating F accordingly
+  //
+  // Input:
+  //   V  #V by dim list of mesh vertex positions
+  //   F  #F by ss list of simplices (Values of -1 are quitely skipped)
+  // Outputs:
+  //   NV  #NV by dim list of mesh vertex positions
+  //   NF  #NF by ss list of simplices
+  //   IM  #V by 1 list of indices such that: NF = IM(F) and NT = IM(T)
+  //      and V(find(IM<=size(NV,1)),:) = NV
+  //
+  //)igl_Qu8mg5v7";
 const char *__doc_igl_rotate_vectors = R"igl_Qu8mg5v7(// Rotate the vectors V by A radiants on the tangent plane spanned by B1 and
   // B2
   //
@@ -1498,6 +1537,18 @@ const char *__doc_igl_readPLY= R"igl_Qu8mg5v7(// Read a mesh from an ascii ply f
   //   N  double matrix of corner normals #N by 3
   //   UV #V by 2 texture coordinates
   // Returns true on success, false on errors)igl_Qu8mg5v7";
+const char *__doc_igl_write_triangle_mesh = R"igl_Qu8mg5v7(// write mesh to an ascii file with automatic detection of file format.
+  // supported: obj, off, stl, wrl, ply, mesh)
+  //
+  // Templates:
+  //   Scalar  type for positions and vectors (will be read as double and cast
+  //     to Scalar)
+  //   Index  type for indices (will be read as int and cast to Index)
+  // Inputs:
+  //   str  path to file
+  //   V  eigen double matrix #V by 3
+  //   F  eigen int matrix #F by 3
+  // Returns true iff success)igl_Qu8mg5v7";
 const char *__doc_igl_seam_edges=R"igl_Qu8mg5v7(// Finds all UV-space boundaries of a mesh.
   //
   // Inputs:
@@ -1528,3 +1579,31 @@ const char *__doc_igl_seam_edges=R"igl_Qu8mg5v7(// Finds all UV-space boundaries
   //       F[ foldovers( i, 0 ), foldovers( i, 1 ) ], F[ foldovers( i, 0 ), (foldovers( i, 1 ) + 1) % 3 ]
   //     and the other side is the edge:
   //       F[ foldovers( i, 2 ), foldovers( i, 3 ) ], F[ foldovers( i, 2 ), (foldovers( i, 3 ) + 1) % 3 ])igl_Qu8mg5v7";
+
+const char *__doc_igl_scaf_precompute = R"igl_Qu8mg5v7( // Compute necessary information to start using SCAF
+  // Inputs:
+  //		V           #V by 3 list of mesh vertex positions
+  //		F           #F by 3/3 list of mesh faces (triangles/tets)
+  //    data          igl::SCAFData
+  //    slim_energy Energy type to minimize
+  //    b           list of boundary indices into V (soft constraint)
+  //    bc          #b by dim list of boundary conditions (soft constraint)
+  //    soft_p      Soft penalty factor (can be zero))igl_Qu8mg5v7";
+
+const char *__doc_igl_scaf_solve = R"igl_Qu8mg5v7(
+  // Run iter_num iterations of SCAF, with precomputed data
+  // Outputs:
+  //    V_o (in SLIMData): #V by dim list of mesh vertex positions)igl_Qu8mg5v7";
+
+const char *__doc_igl_slim_precompute = R"igl_Qu8mg5v7( // Compute necessary information to start using SLIM
+  // Inputs:
+  //		V           #V by 3 list of mesh vertex positions
+  //		F           #F by 3/3 list of mesh faces (triangles/tets)
+  //    b           list of boundary indices into V
+  //    bc          #b by dim list of boundary conditions
+  //    soft_p      Soft penalty factor (can be zero)
+  //    slim_energy Energy to minimize)igl_Qu8mg5v7";
+
+const char *__doc_igl_slim_solve = R"igl_Qu8mg5v7( // Run iter_num iterations of SLIM, with precomputed data
+  // Outputs: 
+  //    V_o (in SLIMData): #V by dim list of mesh vertex positions)igl_Qu8mg5v7";

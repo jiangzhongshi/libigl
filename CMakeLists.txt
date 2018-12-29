@@ -10,8 +10,8 @@ else()
 endif()
 
 # Build tests, tutorials and python bindings
-option(LIBIGL_BUILD_TESTS      "Build libigl unit test"        ${LIBIGL_TOPLEVEL_PROJECT})
-option(LIBIGL_BUILD_TUTORIALS  "Build libigl tutorial"         ${LIBIGL_TOPLEVEL_PROJECT})
+option(LIBIGL_BUILD_TESTS      "Build libigl unit test"        OFF)
+option(LIBIGL_BUILD_TUTORIALS  "Build libigl tutorial"         ON)
 option(LIBIGL_BUILD_PYTHON     "Build libigl python bindings"  ${LIBIGL_TOPLEVEL_PROJECT})
 option(LIBIGL_EXPORT_TARGETS   "Export libigl CMake targets"   ${LIBIGL_TOPLEVEL_PROJECT})
 

@@ -24,3 +24,5 @@ py::bind_vector<std::vector<int>>(m, "VectorInt");
 py::bind_vector<std::vector<std::vector<int>>>(m, "VectorVectorInt");
 
 
+py::bind_vector<std::vector<double>>(m, "VectorDouble");
+py::bind_vector<std::vector<std::vector<double>>>(m, "VectorVectorDouble");

@@ -22,9 +22,7 @@ endif()
 # set(PYTHON_LIBRARIES "/usr/local/Cellar/python3/3.5.0/Frameworks/Python.framework/Versions/3.5/lib/libpython3.5m.dylib")
 # set(PYTHON_INCLUDE_DIR "/usr/local/Cellar/python3/3.5.0/Frameworks/Python.framework/Versions/3.5/include/python3.5m")
 
-set(Python_ADDITIONAL_VERSIONS 3.4 3.5 3.6 3.7)
-find_package(PythonInterp 3.4 REQUIRED)
-find_package(PythonLibs 3.4 REQUIRED)
+set(Python_ADDITIONAL_VERSIONS 3.4 3.5 3.6)
 
 ## libigl
 if(NOT TARGET igl::core)
@@ -35,13 +33,38 @@ endif()
 string(TOUPPER "${CMAKE_BUILD_TYPE}" U_CMAKE_BUILD_TYPE)
 if(UNIX)
   if(NOT ${U_CMAKE_BUILD_TYPE} MATCHES DEBUG)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -flto")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
   endif()
 endif()
 
 ## include pybind
 set(PYBIND11_DIR ${PROJECT_SOURCE_DIR}/../external/pybind11 CACHE PATH "Path to pybind11")
 add_subdirectory(${PYBIND11_DIR} pybind11)
+
+## include libigl
+option(LIBIGL_USE_STATIC_LIBRARY "Use LibIGL as static library" OFF)
+option(LIBIGL_WITH_OPENGL            "Use viewer"         OFF)
+option(LIBIGL_WITH_OPENGL_GLFW       "Use GLFW"           OFF)
+option(LIBIGL_WITH_OPENGL_GLFW_IMGUI "Use ImGui"          OFF)
+option(LIBIGL_WITH_CGAL              "Use CGAL"           OFF)
+option(LIBIGL_WITH_BOOLEAN           "Use Cork boolean"   OFF)
+option(LIBIGL_WITH_COMISO            "Use CoMiso"         OFF)
+option(LIBIGL_WITH_EMBREE            "Use Embree"         ON)
+option(LIBIGL_WITH_LIM               "Use LIM"            ON)
+option(LIBIGL_WITH_MATLAB            "Use Matlab"         OFF)
+option(LIBIGL_WITH_MOSEK             "Use MOSEK"          OFF)
+option(LIBIGL_WITH_PNG               "Use PNG"            OFF)
+option(LIBIGL_WITH_TETGEN            "Use Tetgen"         ON)
+option(LIBIGL_WITH_TRIANGLE          "Use Triangle"       ON)
+option(LIBIGL_WITH_XML               "Use XML"            ON)
+option(LIBIGL_WITH_PYTHON            "Use Python"         ON)
+option(LIBIGL_WITH_COPYLEFT          "Use Copyleft"       ON)
+
+## libigl
+if(NOT TARGET igl::core)
+  list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../shared/cmake")
+  include(libigl)
+endif()
 
 ## Prepare the python library
 pybind11_add_module(pyigl

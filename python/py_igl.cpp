@@ -9,9 +9,9 @@
 
 #include "python_shared.h"
 
-
 #include <igl/AABB.h>
 #include <igl/ARAPEnergyType.h>
+#include <igl/MappingEnergyType.h>
 #include <igl/MeshBooleanType.h>
 #include <igl/SolverStatus.h>
 #include <igl/active_set.h>
@@ -28,6 +28,7 @@
 #include <igl/boundary_loop.h>
 #include <igl/cat.h>
 #include <igl/collapse_edge.h>
+#include <igl/collapse_small_triangles.h>
 #include <igl/colon.h>
 #include <igl/column_to_quats.h>
 #include <igl/comb_cross_field.h>
@@ -37,6 +38,7 @@
 #include <igl/covariance_scatter_matrix.h>
 #include <igl/cross_field_mismatch.h>
 #include <igl/cut_mesh_from_singularities.h>
+#include <igl/decimate.h>
 #include <igl/deform_skeleton.h>
 #include <igl/directed_edge_orientations.h>
 #include <igl/directed_edge_parents.h>
@@ -46,6 +48,8 @@
 #include <igl/edge_topology.h>
 #include <igl/eigs.h>
 #include <igl/exact_geodesic.h>
+#include <igl/facet_components.h>
+#include <igl/false_barycentric_subdivision.h>
 #include <igl/heat_geodesics.h>
 #include <igl/find_cross_field_singularities.h>
 #include <igl/fit_rotations.h>
@@ -55,15 +59,19 @@
 #include <igl/get_seconds.h>
 #include <igl/grad.h>
 #include <igl/harmonic.h>
+#include <igl/hausdorff.h>
 #include <igl/hsv_to_rgb.h>
 #include <igl/internal_angles.h>
 #include <igl/invert_diag.h>
+#include <igl/is_edge_manifold.h>
 #include <igl/is_irregular_vertex.h>
+#include <igl/is_vertex_manifold.h>
 #include <igl/jet.h>
 #include <igl/lbs_matrix.h>
 #include <igl/local_basis.h>
 #include <igl/lscm.h>
 #include <igl/map_vertices_to_circle.h>
+#include <igl/marching_tets.h>
 #include <igl/massmatrix.h>
 #include <igl/min_quad_with_fixed.h>
 #include <igl/normalize_row_lengths.h>
@@ -76,17 +84,24 @@
 #include <igl/planarize_quad_mesh.h>
 #include <igl/point_mesh_squared_distance.h>
 #include <igl/polar_svd.h>
+#include <igl/polygon_mesh_to_triangle_mesh.h>
 #include <igl/principal_curvature.h>
 #include <igl/quad_planarity.h>
+#include <igl/ramer_douglas_peucker.h>
+#include <igl/random_points_on_mesh.h>
 #include <igl/randperm.h>
 #include <igl/readDMAT.h>
 #include <igl/readMESH.h>
 #include <igl/readOBJ.h>
 #include <igl/readOFF.h>
+#include <igl/readPLY.h>
 #include <igl/readTGF.h>
 #include <igl/read_triangle_mesh.h>
 #include <igl/remove_duplicate_vertices.h>
+#include <igl/remove_unreferenced.h>
 #include <igl/rotate_vectors.h>
+#include <igl/scaf.h>
+#include <igl/seam_edges.h>
 #include <igl/setdiff.h>
 #include <igl/shape_diameter_function.h>
 #include <igl/signed_distance.h>
@@ -96,6 +111,7 @@
 #include <igl/marching_tets.h>
 #include <igl/sortrows.h>
 #include <igl/triangle_triangle_adjacency.h>
+#include <igl/uniformly_sample_two_manifold.h>
 #include <igl/unique.h>
 #include <igl/unproject_onto_mesh.h>
 #include <igl/upsample.h>
@@ -103,8 +119,7 @@
 #include <igl/writeMESH.h>
 #include <igl/writeOBJ.h>
 #include <igl/writePLY.h>
-#include <igl/readPLY.h>
-#include <igl/seam_edges.h>
+#include <igl/write_triangle_mesh.h>
 
 void python_export_igl(py::module &m)
 {
@@ -112,6 +127,7 @@ void python_export_igl(py::module &m)
 
 #include "py_igl/py_AABB.cpp"
 #include "py_igl/py_ARAPEnergyType.cpp"
+#include "py_igl/py_MappingEnergyType.cpp"
 #include "py_igl/py_MeshBooleanType.cpp"
 #include "py_igl/py_SolverStatus.cpp"
 #include "py_igl/py_active_set.cpp"
@@ -128,6 +144,7 @@ void python_export_igl(py::module &m)
 #include "py_igl/py_boundary_loop.cpp"
 #include "py_igl/py_cat.cpp"
 #include "py_igl/py_collapse_edge.cpp"
+#include "py_igl/py_collapse_small_triangles.cpp"
 #include "py_igl/py_colon.cpp"
 #include "py_igl/py_column_to_quats.cpp"
 #include "py_igl/py_comb_cross_field.cpp"
@@ -137,6 +154,7 @@ void python_export_igl(py::module &m)
 #include "py_igl/py_covariance_scatter_matrix.cpp"
 #include "py_igl/py_cross_field_mismatch.cpp"
 #include "py_igl/py_cut_mesh_from_singularities.cpp"
+#include "py_igl/py_decimate.cpp"
 #include "py_igl/py_deform_skeleton.cpp"
 #include "py_igl/py_directed_edge_orientations.cpp"
 #include "py_igl/py_directed_edge_parents.cpp"
@@ -146,6 +164,8 @@ void python_export_igl(py::module &m)
 #include "py_igl/py_edge_topology.cpp"
 #include "py_igl/py_eigs.cpp"
 #include "py_igl/py_exact_geodesic.cpp"
+#include "py_igl/py_facet_components.cpp"
+#include "py_igl/py_false_barycentric_subdivision.cpp"
 #include "py_igl/py_heat_geodesics.cpp"
 #include "py_igl/py_find_cross_field_singularities.cpp"
 #include "py_igl/py_fit_rotations.cpp"
@@ -155,15 +175,19 @@ void python_export_igl(py::module &m)
 #include "py_igl/py_get_seconds.cpp"
 #include "py_igl/py_grad.cpp"
 #include "py_igl/py_harmonic.cpp"
+#include "py_igl/py_hausdorff.cpp"
 #include "py_igl/py_hsv_to_rgb.cpp"
 #include "py_igl/py_internal_angles.cpp"
 #include "py_igl/py_invert_diag.cpp"
+#include "py_igl/py_is_edge_manifold.cpp"
 #include "py_igl/py_is_irregular_vertex.cpp"
+#include "py_igl/py_is_vertex_manifold.cpp"
 #include "py_igl/py_jet.cpp"
 #include "py_igl/py_lbs_matrix.cpp"
 #include "py_igl/py_local_basis.cpp"
 #include "py_igl/py_lscm.cpp"
 #include "py_igl/py_map_vertices_to_circle.cpp"
+#include "py_igl/py_marching_tets.cpp"
 #include "py_igl/py_massmatrix.cpp"
 #include "py_igl/py_min_quad_with_fixed.cpp"
 #include "py_igl/py_normalize_row_lengths.cpp"
@@ -176,17 +200,24 @@ void python_export_igl(py::module &m)
 #include "py_igl/py_planarize_quad_mesh.cpp"
 #include "py_igl/py_point_mesh_squared_distance.cpp"
 #include "py_igl/py_polar_svd.cpp"
+#include "py_igl/py_polygon_mesh_to_triangle_mesh.cpp"
 #include "py_igl/py_principal_curvature.cpp"
 #include "py_igl/py_quad_planarity.cpp"
+#include "py_igl/py_ramer_douglas_peucker.cpp"
+#include "py_igl/py_random_points_on_mesh.cpp"
 #include "py_igl/py_randperm.cpp"
 #include "py_igl/py_readDMAT.cpp"
 #include "py_igl/py_readMESH.cpp"
 #include "py_igl/py_readOBJ.cpp"
 #include "py_igl/py_readOFF.cpp"
+#include "py_igl/py_readPLY.cpp"
 #include "py_igl/py_readTGF.cpp"
 #include "py_igl/py_read_triangle_mesh.cpp"
 #include "py_igl/py_remove_duplicate_vertices.cpp"
+#include "py_igl/py_remove_unreferenced.cpp"
 #include "py_igl/py_rotate_vectors.cpp"
+#include "py_igl/py_scaf.cpp"
+#include "py_igl/py_seam_edges.cpp"
 #include "py_igl/py_setdiff.cpp"
 #include "py_igl/py_shape_diameter_function.cpp"
 #include "py_igl/py_signed_distance.cpp"
@@ -196,6 +227,7 @@ void python_export_igl(py::module &m)
 #include "py_igl/py_marching_tets.cpp"
 #include "py_igl/py_sortrows.cpp"
 #include "py_igl/py_triangle_triangle_adjacency.cpp"
+#include "py_igl/py_uniformly_sample_two_manifold.cpp"
 #include "py_igl/py_unique.cpp"
 #include "py_igl/py_unproject_onto_mesh.cpp"
 #include "py_igl/py_upsample.cpp"
@@ -203,6 +235,5 @@ void python_export_igl(py::module &m)
 #include "py_igl/py_writeMESH.cpp"
 #include "py_igl/py_writeOBJ.cpp"
 #include "py_igl/py_writePLY.cpp"
-#include "py_igl/py_readPLY.cpp"
-#include "py_igl/py_seam_edges.cpp"
+#include "py_igl/py_write_triangle_mesh.cpp"
 }

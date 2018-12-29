@@ -448,5 +448,6 @@ py::class_<igl::opengl::ViewerCore> viewercore_class(me, "ViewerCore");
     .def_readwrite("callback_key_pressed", &igl::opengl::glfw::Viewer::callback_key_pressed)
     .def_readwrite("callback_key_down", &igl::opengl::glfw::Viewer::callback_key_down)
     .def_readwrite("callback_key_up", &igl::opengl::glfw::Viewer::callback_key_up)
+    .def("append_mesh", &igl::opengl::glfw::Viewer::append_mesh)
     ;
 }

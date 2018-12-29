@@ -20,4 +20,5 @@ PYBIND11_MAKE_OPAQUE(RotationList)
 
 PYBIND11_MAKE_OPAQUE(std::vector<int>)
 PYBIND11_MAKE_OPAQUE(std::vector<std::vector<int>>)
-
+PYBIND11_MAKE_OPAQUE(std::vector<double>)
+PYBIND11_MAKE_OPAQUE(std::vector<std::vector<double>>)
