@@ -74,9 +74,10 @@ namespace igl
 //		F           #F by 3/3 list of mesh faces (triangles/tets)
 //    data          igl::SCAFData
 //    slim_energy Energy type to minimize
-//    b           list of boundary indices into V (soft constraint)
-//    bc          #b by dim list of boundary conditions (soft constraint)
+//    b           list of constrain indices into V (soft constraint)
+//    bc          #b by dim list of soft constraints' target positions
 //    soft_p      Soft penalty factor (can be zero)
+// Note: The input mesh has to be manifold.
     IGL_INLINE void scaf_precompute(
         const Eigen::MatrixXd &V,
         const Eigen::MatrixXi &F,

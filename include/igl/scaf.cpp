@@ -413,6 +413,7 @@ void build_surface_linear_system(const SCAFData &s, Eigen::SparseMatrix<double> 
   auto decoy_Dy_m = s.Dy_m;
   decoy_Dy_m.conservativeResize(s.W_m.rows(), v_n);
   buildAm(sqrtM, decoy_Dx_m, decoy_Dy_m, s.W_m, A);
+  // buildAm(sqrtM, s.Dx_m, s.Dy_m, s.W_m, A);
 
   const VectorXi &bnd_ids = s.fixed_ids;
   auto bnd_n = bnd_ids.size();
@@ -421,9 +422,6 @@ void build_surface_linear_system(const SCAFData &s, Eigen::SparseMatrix<double> 
 
     Eigen::SparseMatrix<double> At = A.transpose();
     At.makeCompressed();
-
-    Eigen::SparseMatrix<double> id_m(At.rows(), At.rows());
-    id_m.setIdentity();
 
     L = At * A;
 
@@ -633,15 +631,13 @@ IGL_INLINE void igl::scaf_precompute(
     data.soft_cons[b(i)] = bc.row(i);
   data.slim_energy = slim_energy;
 
-  auto &s = data;
-
   if (!data.has_pre_calc)
   {
-    int v_n = s.mv_num + s.sv_num;
-    int f_n = s.mf_num + s.sf_num;
-    int dim = s.dim;
+    int v_n = data.mv_num + data.sv_num;
+    int f_n = data.mf_num + data.sf_num;
+    int dim = data.dim;
     Eigen::MatrixXd F1, F2, F3;
-    igl::local_basis(s.m_V, s.m_T, F1, F2, F3);
+    igl::local_basis(data.m_V, data.m_T, F1, F2, F3);
     auto face_proj = [](Eigen::MatrixXd& F){
       std::vector<Eigen::Triplet<double> >IJV;
       int f_num = F.rows();
@@ -655,51 +651,51 @@ IGL_INLINE void igl::scaf_precompute(
       return P;
     };
     Eigen::SparseMatrix<double> G;
-    igl::grad(s.m_V, s.m_T, G);
-    s.Dx_m = face_proj(F1) * G;
-    s.Dy_m = face_proj(F2) * G;
+    igl::grad(data.m_V, data.m_T, G);
+    data.Dx_m = face_proj(F1) * G;
+    data.Dy_m = face_proj(F2) * G;
 
-    igl::scaf::compute_scaffold_gradient_matrix(s, s.Dx_s, s.Dy_s);
+    igl::scaf::compute_scaffold_gradient_matrix(data, data.Dx_s, data.Dy_s);
 
-    s.Dx_m.makeCompressed();
-    s.Dy_m.makeCompressed();
-    s.Ri_m = Eigen::MatrixXd::Zero(s.Dx_m.rows(), dim * dim);
-    s.Ji_m.resize(s.Dx_m.rows(), dim * dim);
-    s.W_m.resize(s.Dx_m.rows(), dim * dim);
+    data.Dx_m.makeCompressed();
+    data.Dy_m.makeCompressed();
+    data.Ri_m = Eigen::MatrixXd::Zero(data.Dx_m.rows(), dim * dim);
+    data.Ji_m.resize(data.Dx_m.rows(), dim * dim);
+    data.W_m.resize(data.Dx_m.rows(), dim * dim);
 
-    s.Dx_s.makeCompressed();
-    s.Dy_s.makeCompressed();
-    s.Ri_s = Eigen::MatrixXd::Zero(s.Dx_s.rows(), dim * dim);
-    s.Ji_s.resize(s.Dx_s.rows(), dim * dim);
-    s.W_s.resize(s.Dx_s.rows(), dim * dim);
+    data.Dx_s.makeCompressed();
+    data.Dy_s.makeCompressed();
+    data.Ri_s = Eigen::MatrixXd::Zero(data.Dx_s.rows(), dim * dim);
+    data.Ji_s.resize(data.Dx_s.rows(), dim * dim);
+    data.W_s.resize(data.Dx_s.rows(), dim * dim);
 
     data.has_pre_calc = true;
   }
 }
 
-IGL_INLINE Eigen::MatrixXd igl::scaf_solve(SCAFData &s, int iter_num)
+IGL_INLINE Eigen::MatrixXd igl::scaf_solve(SCAFData &data, int iter_num)
 {
   using namespace std;
   using namespace Eigen;
-  s.energy = igl::scaf::compute_energy(s, s.w_uv, false) / s.mesh_measure;
+  data.energy = igl::scaf::compute_energy(data, data.w_uv, false) / data.mesh_measure;
 
   for (int it = 0; it < iter_num; it++)
   {
-    s.total_energy = igl::scaf::compute_energy(s, s.w_uv, true) / s.mesh_measure;
-    s.rect_frame_V = Eigen::MatrixXd();
-    igl::scaf::mesh_improve(s);
+    data.total_energy = igl::scaf::compute_energy(data, data.w_uv, true) / data.mesh_measure;
+    data.rect_frame_V = Eigen::MatrixXd();
+    igl::scaf::mesh_improve(data);
 
-    double new_weight = s.mesh_measure * s.energy / (s.sf_num * 100);
-    s.scaffold_factor = new_weight;
-    igl::scaf::update_scaffold(s);
+    double new_weight = data.mesh_measure * data.energy / (data.sf_num * 100);
+    data.scaffold_factor = new_weight;
+    igl::scaf::update_scaffold(data);
 
-    s.total_energy = igl::scaf::perform_iteration(s);
+    data.total_energy = igl::scaf::perform_iteration(data);
 
-    s.energy =
-        igl::scaf::compute_energy(s, s.w_uv, false) / s.mesh_measure;
+    data.energy =
+        igl::scaf::compute_energy(data, data.w_uv, false) / data.mesh_measure;
   }
 
-  return s.w_uv.topRows(s.mv_num);
+  return data.w_uv.topRows(data.mv_num);
 }
 
 #ifdef IGL_STATIC_LIBRARY
