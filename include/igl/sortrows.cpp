@@ -156,4 +156,5 @@ template void igl::sortrows<class Eigen::Matrix<int,-1,2,0,-1,2>,class Eigen::Ma
 template void igl::sortrows<class Eigen::Matrix<double,-1,-1,0,-1,-1>,class Eigen::Matrix<__int64,-1,1,0,-1,1> >(class Eigen::DenseBase<class Eigen::Matrix<double,-1,-1,0,-1,-1> > const &,bool,class Eigen::PlainObjectBase<class Eigen::Matrix<double,-1,-1,0,-1,-1> > &,class Eigen::PlainObjectBase<class Eigen::Matrix<__int64,-1,1,0,-1,1> > &);
 template void igl::sortrows<class Eigen::Matrix<double,-1,3,0,-1,3>,class Eigen::Matrix<__int64,-1,1,0,-1,1> >(class Eigen::DenseBase<class Eigen::Matrix<double,-1,3,0,-1,3> > const &,bool,class Eigen::PlainObjectBase<class Eigen::Matrix<double,-1,3,0,-1,3> > &,class Eigen::PlainObjectBase<class Eigen::Matrix<__int64,-1,1,0,-1,1> > &);
 #endif
+template void igl::sortrows<Eigen::Matrix<int, -1, -1, 1, -1, -1>, Eigen::Matrix<int, -1, 1, 0, -1, 1> >(Eigen::DenseBase<Eigen::Matrix<int, -1, -1, 1, -1, -1> > const&, bool, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 1, -1, -1> >&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> >&);
 #endif

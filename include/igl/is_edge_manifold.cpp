@@ -101,4 +101,5 @@ template bool igl::is_edge_manifold<Eigen::Matrix<unsigned int, -1, -1, 1, -1, -
 //template bool igl::is_edge_manifold<double>(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, Eigen::Matrix<int, -1, -1, 0, -1, -1> const&);
 template bool igl::is_edge_manifold<Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&);
 template bool igl::is_edge_manifold<Eigen::Matrix<int, -1, 3, 0, -1, 3> >(Eigen::MatrixBase<Eigen::Matrix<int, -1, 3, 0, -1, 3> > const&);
+template bool igl::is_edge_manifold<Eigen::Matrix<int, -1, -1, 1, -1, -1> >(Eigen::MatrixBase<Eigen::Matrix<int, -1, -1, 1, -1, -1> > const&);
 #endif
